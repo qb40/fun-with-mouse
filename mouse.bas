@@ -2,8 +2,10 @@
 DECLARE SUB mouse.loadprog ()
 DECLARE FUNCTION mouse.init% ()
 DECLARE SUB mouse.show ()
-DECLARE SUB mouse.cleardata ()
+DECLARE SUB mouse.start2 ()
 DECLARE SUB mouse.show2 ()
+DECLARE SUB mouse.start3 ()
+DECLARE SUB mouse.show3 ()
 DECLARE SUB mouse.hide ()
 DECLARE SUB mouse.setrange (x1%, y1%, x2%, y2%)
 DECLARE SUB mouse.put (x%, y%)
@@ -47,11 +49,17 @@ PRINT "Mouse not installed."
 SYSTEM
 END IF
 mouse.hide
-mouse.put 0, 0
+mouse.put 79, 24
 
-mouse.cleardata
+PRINT "MOuse;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"
+PRINT "Illlllllllllllllllllllllllleeeeeeeeeeeeeeegggggggggggggalllllllllllllllll"
+PRINT "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+PRINT "M"
+PRINT "kkkkkkkkkkkkkkiiiiiiiiiiii;;;;;;;;;;;;;;;;;;;llllllllllllllllllllllllll"
+
+mouse.start3
 DO
-mouse.show2
+mouse.show3
 LOOP
 
 FUNCTION dat.datum% (fl1$, pos1&)
@@ -83,15 +91,6 @@ POKE mem1&, ASC(file.byte)
 mem1& = mem1& + 1
 LOOP
 CLOSE #fr%
-DEF SEG
-END SUB
-
-SUB mouse.cleardata
-SHARED Jerry AS mouse
-mem1& = (Jerry.xpos + Jerry.ypos * 80) * 2
-DEF SEG = &HB800
-POKE 5000, PEEK(mem1&)
-POKE 5001, PEEK(mem1& + 1)
 DEF SEG
 END SUB
 
@@ -128,6 +127,8 @@ END SUB
 
 SUB mouse.put (x%, y%)
 SHARED mouse$
+x% = x% * 8
+y% = y% * 8
 DEF SEG = &H101
 POKE 0, x% MOD 256
 POKE 1, x% \ 256
@@ -222,6 +223,43 @@ Jerry.oldypos = Jerry.ypos
 Jerry.oldxpos = Jerry.xpos
 DEF SEG
 END IF
+END SUB
+
+SUB mouse.show3
+SHARED Jerry AS mouse
+mouse.status
+IF (Jerry.oldxpos <> Jerry.xpos OR Jerry.oldypos <> Jerry.ypos) THEN
+DEF SEG = &HB800
+mem1& = (Jerry.oldypos * 80 + Jerry.oldxpos) * 2
+POKE mem1&, Jerry.mousetype
+POKE mem1& + 1, NOT (Jerry.mouseattrib)
+mem1& = (Jerry.ypos * 80 + Jerry.xpos) * 2
+Jerry.mousetype = PEEK(mem1&)
+Jerry.mouseattrib = NOT (PEEK(mem1& + 1))
+POKE mem1&, Jerry.mousetype
+POKE mem1& + 1, Jerry.mouseattrib
+Jerry.oldypos = Jerry.ypos
+Jerry.oldxpos = Jerry.xpos
+DEF SEG
+END IF
+END SUB
+
+SUB mouse.start2
+SHARED Jerry AS mouse
+mem1& = (Jerry.xpos + Jerry.ypos * 80) * 2
+DEF SEG = &HB800
+POKE 5000, PEEK(mem1&)
+POKE 5001, PEEK(mem1& + 1)
+DEF SEG
+END SUB
+
+SUB mouse.start3
+SHARED Jerry AS mouse
+DEF SEG = &HB800
+mem1& = (Jerry.oldypos * 80 + Jerry.oldxpos) * 2
+Jerry.mousetype = PEEK(mem1&)
+Jerry.mouseattrib = NOT (PEEK(mem1& + 1))
+DEF SEG
 END SUB
 
 SUB mouse.status
