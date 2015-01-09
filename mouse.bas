@@ -19,8 +19,7 @@ DIM Jerry AS mouse
 mouse$ = ""
 
 'main
-'set screen mode
-SCREEN 13
+CLS
 'load ASSEMBLY PROGRAM
 mouse.loadprog
 'find if mouse is present
@@ -29,6 +28,18 @@ IF (a1% <> 1) THEN
 PRINT "Mouse not installed."
 SYSTEM
 END IF
+'display
+COLOR 15
+PRINT "Fun With Mouse"
+COLOR 7
+PRINT "--------------"
+PRINT
+COLOR 14
+PRINT "[left]  = draw from top-left corner"
+PRINT "[right] = draw from top-right corner"
+k$ = INPUT$(1)
+'set screen mode
+SCREEN 13
 'show mouse
 mouse.show
 'set mouse range(defect)
